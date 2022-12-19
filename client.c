@@ -6,32 +6,14 @@
 /*   By: mjuin <mjuin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 19:43:27 by mjuin             #+#    #+#             */
-/*   Updated: 2022/11/22 09:32:40 by mjuin            ###   ########.fr       */
+/*   Updated: 2022/12/19 09:58:11 by mjuin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 #include <signal.h>
 
-static int	*ft_convertbinary(unsigned int c)
-{
-	int	*ret;
-	int	pos;
-
-	pos = 7;
-	ret = ft_calloc(8, sizeof(int));
-	if (!ret)
-		return (0);
-	while (pos > 0)
-	{
-		ret[pos] = c % 2;
-		pos--;
-		c /= 2;
-	}
-	return (ret);
-}
-
-static int	ft_sendbinary(int bin[8], int pid)
+static int	ft_sendbinary(char c, int pid)
 {
 	int	pos;
 	int	ret;
@@ -39,22 +21,37 @@ static int	ft_sendbinary(int bin[8], int pid)
 	pos = 0;
 	while (pos < 8)
 	{
-		if (bin[pos] == 0)
-			ret = kill(pid, SIGUSR1);
-		else
+		if (c >> pos & 1)
 			ret = kill(pid, SIGUSR2);
+		else
+			ret = kill(pid, SIGUSR1);
 		if (ret != 0)
 			return (-1);
 		pos++;
-		usleep(300);
+		usleep(1);
 	}
 	return (0);
+}
+
+static void	ft_sendint(int sended, int pid)
+{
+	int	pos;
+
+	pos = 0;
+	while (pos < 32)
+	{
+		if (sended >> pos & 1)
+			kill(pid, SIGUSR2);
+		else
+			kill(pid, SIGUSR1);
+		pos++;
+		usleep(1);
+	}
 }
 
 int	main(int ac, char **av)
 {
 	int					pid;
-	int					*bin;
 	int					pos;
 	int					ret;
 
@@ -64,12 +61,12 @@ int	main(int ac, char **av)
 	if (pid < 0)
 		return (0);
 	pos = 0;
-	while ((pos == 0 && av[2][pos]) || (pos != 0 && av[2][pos - 1]))
+	if (av[2] != NULL && av[2][0] != '\0')
+		ft_sendint(ft_strlen(av[2]), pid);
+	while (av[2][pos])
 	{
-		bin = ft_convertbinary(av[2][pos]);
-		ret = ft_sendbinary(bin, pid);
+		ret = ft_sendbinary(av[2][pos], pid);
 		pos++;
-		free(bin);
 		if (ret == -1)
 			return (0);
 	}

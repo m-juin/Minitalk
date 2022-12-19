@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjuin <mjuin@student.42angouleme.fr>       +#+  +:+       +#+        */
+/*   By: mjuin <mjuin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 14:30:28 by mjuin             #+#    #+#             */
-/*   Updated: 2022/11/05 20:03:14 by mjuin            ###   ########.fr       */
+/*   Updated: 2022/12/09 16:19:37 by mjuin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ size_t	ft_strlen(const char *s)
 	len = 0;
 	if (s == NULL)
 		return (0);
-	while (s[len] != 0)
+	while (s[len])
 		len++;
 	return (len);
 }

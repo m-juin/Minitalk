@@ -12,7 +12,7 @@
 
 NAME	= libft.a
 
-CC	= cc
+CC	= clang
 
 AR	= ar rcs
 

@@ -2,7 +2,7 @@ NAME_S = server
 
 NAME_C = client
 
-CC	= cc
+CC	= clang
 
 CFLAGS	= -Wall -Wextra -Werror -g
 

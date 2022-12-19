@@ -6,98 +6,66 @@
 /*   By: mjuin <mjuin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 11:48:30 by mjuin             #+#    #+#             */
-/*   Updated: 2022/11/22 13:53:13 by mjuin            ###   ########.fr       */
+/*   Updated: 2022/12/19 09:49:55 by mjuin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include "libft/libft.h"
 
-static int	g_signo;
+static char	*g_str;
 
-static int	ft_addbinary(int binary[8])
+static void	ft_handleresult(int send)
 {
-	int	pos;
+	static int	size;
+	static int	count;
 
-	pos = 0;
-	while (pos < 8 && binary[pos] != 2)
-		pos++;
-	if (pos == 8)
-	{	
-		pos = 0;
-		while (pos < 8)
-			binary[pos++] = 2;
-		pos = 0;
-	}
-	if (g_signo == 10)
-		binary[pos] = 0;
-	else
-		binary[pos] = 1;
-	return (pos + 1);
-}
-
-static void	ft_write(char *str)
-{
-	int	pos;
-
-	pos = 0;
-	while (str[pos])
+	if (g_str == NULL)
 	{
-		write(1, &str[pos], 1);
-		pos++;
+		size = send;
+		g_str = malloc(size + 1 * sizeof(char));
+		g_str[size] = '\0';
+		return ;
 	}
-	free(str);
-}
-
-static char	*ft_handleresult(int binary[8], char *str)
-{
-	char	*tmp;
-	int		pos;
-	char	added;
-
-	pos = ft_addbinary(binary);
-	if (pos != 8)
-		return (str);
-	added = ft_convert_bin(binary);
-	tmp = ft_straddchar(str, added);
-	if (str != NULL)
-		free(str);
-	if (!tmp)
-		return (NULL);
-	if (added == 0)
+	count++;
+	g_str[count - 1] = send;
+	if (count == size)
 	{
-		ft_write(tmp);
-		return (NULL);
+		write(1, g_str, size);
+		free(g_str);
+		g_str = NULL;
+		size = 0;
+		count = 0;
 	}
-	return (tmp);
 }
 
 void	signal_catcher(int signo)
 {
-	g_signo = signo;
+	static int	count;
+	static int	sendedchar;
+	int			binvalue;
+
+	if (signo == 10)
+		binvalue = 0;
+	else
+		binvalue = 1;
+	sendedchar += binvalue * ft_power(count, 2);
+	count++;
+	if ((g_str == NULL && count == 32) || (g_str != NULL && count == 8))
+	{
+		count = 0;
+		ft_handleresult(sendedchar);
+		sendedchar = 0;
+	}
 }
 
 int	main(void)
 {
-	int					binary[8];
-	int					pos;
-	char				*str;
-	struct sigaction	sa;
-
 	ft_printf("Server pid = %i\n", getpid());
-	sa.sa_handler = (void *)signal_catcher;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
-	pos = 0;
-	str = NULL;
-	while (pos < 8)
-		binary[pos++] = 2;
+	g_str = NULL;
 	while (1)
 	{
-		pause();
-		usleep(1);
-		str = ft_handleresult(binary, str);
+		signal(SIGUSR1, &signal_catcher);
+		signal(SIGUSR2, &signal_catcher);
 	}
 }
