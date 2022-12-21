@@ -6,7 +6,7 @@
 /*   By: mjuin <mjuin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 11:48:30 by mjuin             #+#    #+#             */
-/*   Updated: 2022/12/19 09:49:55 by mjuin            ###   ########.fr       */
+/*   Updated: 2022/12/21 10:47:06 by mjuin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ static void	ft_handleresult(int send)
 	if (g_str == NULL)
 	{
 		size = send;
-		g_str = malloc(size + 1 * sizeof(char));
+		g_str = malloc((size + 1) * sizeof(char));
+		if (g_str == NULL)
+			return ;
 		g_str[size] = '\0';
 		return ;
 	}
