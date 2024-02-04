@@ -4,7 +4,7 @@
 # Project
 Push Swap is one of the three projects in the 42 program third circle. The purpose of this project is to code a small data exchange program using UNIX signals.
 
-# Contraint
+# Constraints
 According to the subject there is 3 contraints for this project:
 *  Only one global variable allower per program.
 *  Only use two signals: SIGUSR1 and SIGUSR2
