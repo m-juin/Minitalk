@@ -22,11 +22,11 @@ COBJ = ${CSRC:.c=.o}
 all: ${NAME_S} ${NAME_C}
 
 ${NAME_S}: ${SOBJ}
-	make -C ./libft/
+	@make -C ./libft/
 	${CC} ${CFLAGS} -o $(NAME_S) ${SOBJ} libft/libft.a
 
 $(NAME_C):${COBJ}
-	make -C ./libft/
+	@make -C ./libft/
 	${CC} ${CFLAGS} -o $(NAME_C) ${COBJ} libft/libft.a
 
 clean:
@@ -38,5 +38,4 @@ fclean:	clean
 
 re:	fclean all
 
-.PHONY:
-	re fclean clean all server client
+.PHONY:	re fclean clean all

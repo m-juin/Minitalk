@@ -28,7 +28,7 @@ static int	ft_sendbinary(char c, int pid)
 		if (ret != 0)
 			return (-1);
 		pos++;
-		usleep(1);
+		usleep(2);
 	}
 	return (0);
 }
@@ -45,7 +45,7 @@ static void	ft_sendint(int sended, int pid)
 		else
 			kill(pid, SIGUSR1);
 		pos++;
-		usleep(1);
+		usleep(2);
 	}
 }
 
